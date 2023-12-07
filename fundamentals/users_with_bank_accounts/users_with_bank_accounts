@@ -1,0 +1,112 @@
+class User:
+    def __init__(self,first_name,last_name,email,age):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.email = email
+        self.age = age
+        self.accounts = []
+        self.accounts.append(BankAccount())
+    
+    def make_deposit(self, amount, account):
+        account-=1
+        if account >= len(self.accounts) or account < 0:
+            print("Cannot perform task, no such account")
+            return self
+        self.accounts[account].deposit(amount)
+        print(f'''Deposit made in Account #{account+1}''')
+        print(f'''Previous Balance - ${self.accounts[account].balance - amount}''')
+        print(f'''New Balance - ${self.accounts[account].balance}''')
+        return self
+
+    def make_withdrawal(self, amount, account):
+        account-=1
+        if account >= len(self.accounts) or account < 0:
+            print("Cannot perform task, no such account")
+            return self
+        self.accounts[account].withdraw(amount)
+        print(f'''Withdrawal from account {account+1} complete, new balance is ${self.accounts[account].balance}''')
+        return self
+
+    def make_new_account(self):
+        self.accounts.append(BankAccount())
+        print(f'''You now have {len(self.accounts)} accounts.''')
+        self.display_all_user_balances()
+
+    def display_user_balance(self, account):
+        print(f'''Account #{account} - Current Balance: ${round(self.accounts[account-1].balance, 2)}''')
+        return self
+    
+    def display_all_user_balances(self):
+        print("Here are your current account balances:")
+        for i in range(0, len(self.accounts)):
+            print(f'''Account #{i+1}: ${round(self.accounts[i].balance)}''')
+        return self
+    
+    def transfer_funds(self, other_user, amount, sending_account=1, receiving_account=1):
+        print("Initiating transfer...")
+        if self.accounts[sending_account].balance < amount:
+            print("Cannot complete transfer (Insufficient Funds)")
+            return self
+        other_user.accounts[receiving_account-1].balance+=amount
+        self.accounts[receiving_account-1].balance-=amount
+        print(f'''Transfer Complete''')
+        print(f'''{self.first_name} {self.last_name} successfully transferred ${amount} to {other_user.first_name} {other_user.last_name}''')
+        print(f'''Previous Balance: {self.accounts[sending_account].balance + amount}''')
+        print(f'''New Balance: {self.accounts[sending_account].balance}''')
+
+class BankAccount:
+    all_accounts_index = []
+
+    def __init__(self, balance=0, interest_rate=.02):
+        self.balance = balance
+        self.interest_rate = interest_rate
+        BankAccount.all_accounts_index.append(self)
+
+    def deposit(self, amount):
+        self.balance+=amount
+        print(f'''Current balance is {self.balance}''')
+        return self
+
+    def withdraw(self,amount):
+        if self.balance < amount:
+            print("Insufficient funds: Charging a $5 fee")
+            self.balance-=5
+            return self
+        else:
+            self.balance-=amount
+            return self
+
+    def display_account_info(self):
+        print(f'''Interest Rate: {self.interest_rate}''')
+        print(f'''Balance: ${self.balance}''')
+        return self
+
+    def yield_interest(self):
+        if self.balance < 0:
+            print("Yeilding no interest: account balance negative")
+            return self
+        else:
+            print(f'''Interest has compounded!''')
+            print(f'''Current Balance: ${self.balance}''')
+            print(f'''Interest applied: {self.interest_rate}% (${round((self.balance*self.interest_rate),2)})''')
+            self.balance+= (self.balance*self.interest_rate)
+            print(f'''New Balance: {self.balance}''')
+            return self
+
+    @classmethod
+    def print_all_accounts(cls):
+        for item in cls.all_accounts_index:
+            item.display_account_info()
+
+
+luke = User("Luke", "Thayer", "lthayer.freelance@gmail.com", 33)
+kelila = User("Kelila", "K", "unlisted@gmail.com", 39)
+
+luke.make_new_account()
+luke.make_deposit(500,1)
+luke.display_user_balance(1).make_deposit(500,2).display_all_user_balances()
+
+kelila.make_deposit(10000,1)
+
+luke.transfer_funds(kelila, 500,1,1)
+
