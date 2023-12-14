@@ -65,6 +65,3 @@ class Pet:
             print("I'm not your pet, leave me alone.")
         return self
     
-class Cat(Pet):
-    super().__init__(name, tricks, health, energy, type_of_animal="Cat")
-    lives = 9

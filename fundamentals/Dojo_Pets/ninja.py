@@ -1,4 +1,5 @@
 from pet import Pet
+from cat import Cat
 
 class Ninja:
     def __init__(self, first_name, last_name, pet, treats, pet_food):
@@ -39,7 +40,11 @@ luke = Ninja("Luke", "Thayer", butters, 10, 10)
 
 #luke.walk().feed().bathe()
 
-geoffrey = Cat("Geoff", "Cat", [Sleep], 50, 50)
+geoffrey = Cat("Geoff", "Cat", ["Sleep"], 50, 50)
 
 print(geoffrey.name)
+
+luke.pet = geoffrey
+
+luke.bathe()
 
